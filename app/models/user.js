@@ -16,8 +16,6 @@ const userSchema = new Schema({
         type : String,
         required : true,
         unique : true,
-        // how to check the format of the email
-        //to test the validation for the format of email,  we have to install a package called validator
         validate : function(value){
             return validator.isEmail(value)
         },
@@ -31,6 +29,11 @@ const userSchema = new Schema({
         required : true,
         minlength : 6,
         maxlength : 128
+    },
+    role : {
+        type : String,
+        required : true,
+        default : 'user'
     },
     tokens : [
         {
@@ -62,7 +65,6 @@ userSchema.pre('save', function(next) {
 })
 
 
-//checking for the valid token
 userSchema.statics.findByToken = function(token){
     const User = this
     let tokenData
@@ -77,7 +79,7 @@ userSchema.statics.findByToken = function(token){
     })
 }
 
-// own instance method
+
 userSchema.methods.generateToken = function(){
     const user = this
     const tokenData = {
@@ -91,14 +93,22 @@ userSchema.methods.generateToken = function(){
     })
     return user.save()
         .then(function(user){
-            return Promise.resolve(token)
+            return Promise.resolve({
+                user : {
+                    _id : user._id,
+                    username : user.username,
+                    email : user.email,
+                    role : user.role
+                },
+                token
+            })
         })
         .catch(function(err){
             return Promise.reject(err)
         })
 }
 
-//own static method
+
 userSchema.statics.findByCredentials = function(email, password){
     const User = this
     return User.findOne({ email })

@@ -6,24 +6,29 @@ const { authenticateUser } = require('../middlewares/authenticate')
 
 //localhost:3005/users/register
 router.post('/register', function(req, res){
-    console.log()
     const {username, email, password} = req.body
 
-    if( !username || !email || !password ){
-        res.send({msg : 'Please enter all fields'})
-    }
-    if (password.length < 6) {
-        res.send({ msg: 'Password must be at least 6 characters' });
+    if( !username && !email && !password ){
+       res.send({message : 'Please enter all fields'})
     }
     if (username.length < 5 ){
-        res.send({ msg : "username must be at least 5 character"})
+        res.send({ message : "Username must be at least 5 character"})
+    }
+    
+    if (password.length < 6) {
+       res.send({ message : 'Password must be at least 6 characters' })
     }
     else{
         const user = new User({
             username,
             email,
             password
-          })
+        })
+        User.countDocuments({}, function(err, count) {
+            if(count == 0) {
+                user.role = 'Admin'
+            }
+        })
         user.save()
         .then(function(user){
             res.send(user)
@@ -32,7 +37,6 @@ router.post('/register', function(req, res){
             res.send(err)
         })
     }
-    
 
 })
 
@@ -43,14 +47,23 @@ router.post('/login', function(req, res){
     .then(function(user){
         return user.generateToken()    //return Promise object
         })
-        .then(function(token){
-            res.setHeader('x-auth', token).send({})
+        .then(function(user){
+           res.send(user)
         })
         .catch(function(err){
             res.send(err)
         })
 })
 
+router.get('/account', authenticateUser, function(req, res){
+    const {user} = req
+    res.send ({
+        _id : user.id, 
+        username : user.username,
+        email : user.email,
+        role : user.role
+    })
+})
 router.delete('/logout', authenticateUser, function(req, res){
     const { user, token} = req
     User.findByIdAndUpdate(user._id, { $pull : { tokens : {token : token }}})

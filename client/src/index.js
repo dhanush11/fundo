@@ -2,11 +2,29 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import * as serviceWorker from './serviceWorker';
 
-ReactDOM.render(<App />, document.getElementById('root'));
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+import { Provider } from 'react-redux'
+import configureStore from './redux/store/configureStore';
+import { getCurrentUser } from './redux/actions/users';
+
+const store = configureStore()
+
+console.log('before', store.getState())
+store.subscribe(() => {
+    console.log(store.getState())
+})
+console.log(store.getState())
+if(localStorage.getItem('token')){
+    store.dispatch(getCurrentUser())
+}
+
+
+const jsx = (
+    <Provider store = {store}>
+        <App />
+    </Provider>
+)
+ReactDOM.render(jsx , document.getElementById('root'));
+
+
