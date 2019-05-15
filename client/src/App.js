@@ -24,20 +24,18 @@ class App extends React.Component {
       <BrowserRouter>
         
             <Link to='/'>Home</Link> |
-          
               {
                 this.state.isAuthenticated && (
                   <div>
                     <Link to='/users/logout'>Logout</Link>
-                    <Link to='/users/account'>My account</Link>
                   </div>
                 )
               }
               {
                 !this.state.isAuthenticated && (
                   <div>
-                    <Link to='/users/register'>Register</Link> |
-                    <Link to='/users/login'>Login</Link>
+                    <Link to='/users/register' >Register</Link>
+                    <Link to='/users/login' >Login</Link>
                   </div>
                 )
               }

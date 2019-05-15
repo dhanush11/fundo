@@ -10,11 +10,14 @@ import { getCurrentUser } from './redux/actions/users';
 
 const store = configureStore()
 
-console.log('before', store.getState())
+
 store.subscribe(() => {
     console.log(store.getState())
 })
+
+
 console.log(store.getState())
+
 if(localStorage.getItem('token')){
     store.dispatch(getCurrentUser())
 }
@@ -22,7 +25,7 @@ if(localStorage.getItem('token')){
 
 const jsx = (
     <Provider store = {store}>
-        <App />
+        <App/>
     </Provider>
 )
 ReactDOM.render(jsx , document.getElementById('root'));

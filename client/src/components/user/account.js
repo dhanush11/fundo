@@ -2,15 +2,20 @@ import React from 'react';
 import { connect } from 'react-redux' 
 
 
+
+
 const UserAccount = (props) => {
-    console.log(props)
+    return (
+        <h2>user account </h2>
+    )
 }
 
 
-const mapStateToprops = (state) => {
+const mapStateToProps = (state) => {
+  
     return {
         user : state.user
     }
 }
 
-export default connect(mapStateToprops)(UserAccount)
+export default connect(mapStateToProps)(UserAccount)

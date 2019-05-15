@@ -64,6 +64,8 @@ router.get('/account', authenticateUser, function(req, res){
         role : user.role
     })
 })
+
+
 router.delete('/logout', authenticateUser, function(req, res){
     const { user, token} = req
     User.findByIdAndUpdate(user._id, { $pull : { tokens : {token : token }}})
